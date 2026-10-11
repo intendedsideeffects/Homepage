@@ -147,7 +147,6 @@ h1 {
 }
 .data-accent {
   color: var(--particle-blue);
-  font-weight: 400;
 }
 .experience-accent {
   color: #d84bcb;

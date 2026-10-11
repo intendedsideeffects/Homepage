@@ -58,8 +58,8 @@ particles = d3.range(SETTINGS.count).map(() => {
   const blue = Math.random() < SETTINGS.blueShare;
   const radius =
     Math.random() < 0.89
-      ? 0.45 + Math.random() * 0.6
-      : 1.1 + Math.random() * 0.85;
+      ? 0.55 + Math.random() * 0.75
+      : 1.35 + Math.random() * 1.05;
   return {
     x,
     y,
