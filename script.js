@@ -5,8 +5,8 @@ const SETTINGS = {
   speed: 0.09,
   roam: 85,
   hoverRadius: 14,
-  hoverSize: 30.5,
-  visitedSize: 2.4, // Pink dots remain visible after hover.
+  hoverSize: 20.5,
+  visitedSize: 1.5, // Pink dots remain visible after hover.
 };
 
 // 1. SETUP
@@ -38,7 +38,7 @@ function resize() {
 
 let particles;
 resize();
-particles = d3.range(SETTINGS.count).map(() => {
+particles = d3.range(SETTINGS.count).flatMap(() => {
   // Denser pockets along the diagonal, with quieter spaces between them.
   const clusters = [0.19, 0.48, 0.78, 0.84];
   const t =
@@ -56,31 +56,52 @@ particles = d3.range(SETTINGS.count).map(() => {
   const y =
     height * (0.06 + 0.7 * t + 0.13 * Math.sin(t * Math.PI * 2.4)) +
     normal() * height * (0.07 + 0.065 * t);
+  // Irregular quieter pockets: leave some areas noticeably more open.
+  // Smooth probability variation avoids hard-edged holes.
+  const gaps = [
+    [0.65, 0.26, 0.12, 0.12, 0.72],
+    [0.79, 0.47, 0.1, 0.11, 0.68],
+    [0.9, 0.69, 0.12, 0.1, 0.75],
+    [0.57, 0.53, 0.08, 0.1, 0.58],
+  ];
+  const thinning = Math.max(
+    ...gaps.map(
+      ([cx, cy, rx, ry, strength]) =>
+        strength *
+        Math.exp(
+          -0.5 * (((x / width - cx) / rx) ** 2 + ((y / height - cy) / ry) ** 2),
+        ),
+    ),
+  );
+  if (Math.random() < thinning) return [];
+
   const blue = Math.random() < SETTINGS.blueShare;
   const radius =
     Math.random() < 0.89
       ? 0.55 + Math.random() * 0.75
       : 1.35 + Math.random() * 1.05;
-  return {
-    x,
-    y,
-    homeX: x,
-    homeY: y,
-    angle: Math.random() * Math.PI * 2,
-    speed: SETTINGS.speed * (0.4 + Math.random() * 1.2),
-    radius,
-    displayRadius: radius,
-    visited: false,
-    opacity:
-      (t > 0.68 ? 0.36 : 0.22) + Math.random() * (t > 0.68 ? 0.58 : 0.68),
-    color: blue
-      ? Math.random() < 0.38
-        ? "var(--particle-pale)"
-        : "var(--particle-blue)"
-      : Math.random() < 0.42
-        ? "var(--particle-soft)"
-        : "var(--particle-gray)",
-  };
+  return [
+    {
+      x,
+      y,
+      homeX: x,
+      homeY: y,
+      angle: Math.random() * Math.PI * 2,
+      speed: SETTINGS.speed * (0.4 + Math.random() * 1.2),
+      radius,
+      displayRadius: radius,
+      visited: false,
+      opacity:
+        (t > 0.68 ? 0.36 : 0.22) + Math.random() * (t > 0.68 ? 0.58 : 0.68),
+      color: blue
+        ? Math.random() < 0.38
+          ? "var(--particle-pale)"
+          : "var(--particle-blue)"
+        : Math.random() < 0.42
+          ? "var(--particle-soft)"
+          : "var(--particle-gray)",
+    },
+  ];
 });
 
 // Small, irregular cluster in the lower-left corner.
@@ -107,18 +128,17 @@ function addParticle(x, y, spread = 1) {
   });
 }
 
-// Two overlapping pockets create a small cloud, not a rectangle.
-for (let i = 0; i < 145; i++) {
-  const pocket = Math.random() < 0.65;
-  const x =
-    width * (pocket ? 0.11 : 0.23) + normal() * width * (pocket ? 0.065 : 0.05);
-  const y = height * (pocket ? 0.92 : 0.89) + normal() * height * 0.038;
+// Sparse lower-left accents, but no particles in the marked bottom-left corner.
+// Keep a small group closer to the diagonal connection instead.
+for (let i = 0; i < 35; i++) {
+  const x = width * 0.265 + normal() * width * 0.034;
+  const y = height * 0.89 + normal() * height * 0.025;
   addParticle(x, y);
 }
 
 // A BROKEN, airy connection toward the main cloud.
 // Three short groups with large gaps: no visible line or outline.
-for (let i = 0; i < 105; i++) {
+for (let i = 0; i < 80; i++) {
   const segment = Math.random();
   const t =
     segment < 0.36
@@ -128,7 +148,7 @@ for (let i = 0; i < 105; i++) {
         : 0.67 + Math.random() * 0.2;
   // Curved path stays below the headline and joins the lower-left edge
   // of the large cloud. Noise makes it naturally irregular.
-  const x = width * (0.27 + 0.37 * t) + normal() * width * 0.013;
+  const x = width * (0.29 + 0.35 * t) + normal() * width * 0.013;
   const y =
     height * (0.9 - 0.46 * t + 0.035 * Math.sin(t * Math.PI * 2)) +
     normal() * height * 0.025;
@@ -191,7 +211,7 @@ function animate(time) {
     .attr("cy", (d) => d.y)
     .attr("r", (d) => d.displayRadius)
     .attr("fill", (d) => (d.visited ? "#ff80ff" : d.color))
-    .attr("opacity", (d) => (d.visited ? 0.65 : d.opacity));
+    .attr("opacity", (d) => (d.visited ? 1 : d.opacity));
   requestAnimationFrame(animate);
 }
 
