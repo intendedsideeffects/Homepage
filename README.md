@@ -1,6 +1,6 @@
 # Intended Side Effects — Homepage Header
 
-Minimal D3.js + SVG portfolio. Open `index.html` with Live Server, or run `py -m http.server 3000` from this folder and visit http://localhost:3000.
+Updates: clustered particle distribution with quieter spaces; slightly larger tagline and more generous line spacing; tagline reads “centering human and more-than-human experiences.” Home navigation dot is active on first load.
 
 `script.js` has four sections: Setup, Animation, Interaction & Theme, Navigation.
 

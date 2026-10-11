@@ -1,8 +1,6 @@
 :root {
   font-family: "DM Sans", Arial, sans-serif;
   scroll-behavior: smooth;
-  --particle-blue: #154bd4;
-  --particle-pale: #819ad7;
 }
 * {
   box-sizing: border-box;
@@ -21,6 +19,8 @@ body[data-theme="light"] {
   --muted: #3c4550;
   --particle-gray: #27313c;
   --particle-soft: #89939e;
+  --particle-blue: #154bd4;
+  --particle-pale: #819ad7;
 }
 body[data-theme="dark"] {
   --bg: #090f19;
@@ -28,6 +28,8 @@ body[data-theme="dark"] {
   --muted: #b6b9bb;
   --particle-gray: #c5c0b4;
   --particle-soft: #777e80;
+  --particle-blue: #154bd4;
+  --particle-pale: #819ad7;
 }
 /* One shared grid edge for the hero, navigation and all sections. */
 .site-header,
@@ -125,6 +127,7 @@ nav a:hover::after {
 }
 h1 {
   margin: 0;
+  margin-left: -10px;
   font-size: clamp(62px, 8.5vw, 160px);
   font-weight: 400;
   line-height: 0.88;
@@ -139,8 +142,15 @@ h1 {
 .hero-content p {
   margin: 0;
   color: var(--muted);
-  font-size: clamp(13px, 1.05vw, 17px);
-  line-height: 1.5;
+  font-size: clamp(15px, 1.15vw, 18px);
+  line-height: 1.75;
+}
+.data-accent {
+  color: var(--particle-blue);
+  font-weight: 400;
+}
+.experience-accent {
+  color: #d84bcb;
 }
 .section {
   min-height: 45vh;

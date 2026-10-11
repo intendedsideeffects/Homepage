@@ -38,11 +38,23 @@ function resize() {
 let particles;
 resize();
 particles = d3.range(SETTINGS.count).map(() => {
-  const t = Math.random();
-  const x = width * (0.49 + t * 0.53) + normal() * width * (0.045 + 0.045 * t);
+  // Denser pockets along the diagonal, with quieter spaces between them.
+  const clusters = [0.19, 0.48, 0.78];
+  const t =
+    Math.random() < 0.72
+      ? Math.max(
+          0,
+          Math.min(
+            1,
+            clusters[Math.floor(Math.random() * clusters.length)] +
+              normal() * 0.065,
+          ),
+        )
+      : Math.random();
+  const x = width * (0.49 + t * 0.53) + normal() * width * (0.036 + 0.035 * t);
   const y =
     height * (0.06 + 0.7 * t + 0.13 * Math.sin(t * Math.PI * 2.4)) +
-    normal() * height * (0.09 + 0.085 * t);
+    normal() * height * (0.07 + 0.065 * t);
   const blue = Math.random() < SETTINGS.blueShare;
   const radius =
     Math.random() < 0.89
@@ -116,7 +128,7 @@ function animate(time) {
     .attr("cx", (d) => d.x)
     .attr("cy", (d) => d.y)
     .attr("r", (d) => d.displayRadius)
-    .attr("fill", (d) => (d === closest ? "#ff80ff" : d.color)) // #CFFF04
+    .attr("fill", (d) => (d === closest ? "#ff80ff" : d.color))
     .attr("opacity", (d) => (d === closest ? 1 : d.opacity));
   requestAnimationFrame(animate);
 }
