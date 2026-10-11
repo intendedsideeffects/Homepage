@@ -1,7 +1,7 @@
-# Intended Side Effects — Homepage Header
+# Intended Side Effects — V14
 
-Updates: clustered particle distribution with quieter spaces; slightly larger tagline and more generous line spacing; tagline reads “centering human and more-than-human experiences.” Home navigation dot is active on first load.
+Changes from V13: denser, more visible lower-right part of the particle cloud; previously hovered pink particles remain slightly enlarged (3.5px radius), while the active hover still grows to 20.5px. The 15 isolated lower-left particles remain.
 
-`script.js` has four sections: Setup, Animation, Interaction & Theme, Navigation.
+Open `index.html` via a local server (`py -m http.server 3000`).
 
-Hover enlarges **only the nearest particle within 14px**, turning it pink (`#ff80ff`). The maximum SVG radius is 20.5px (41px diameter). The particles drift independently but remain near their original cloud positions. No canvas, no particle repulsion, no random angle changes.
+V15: Pink particles settle at a minimum 2.5px radius; a more visible, loosely scattered group of 85 particles appears below the tagline in the lower-left corner. Main cloud unchanged.

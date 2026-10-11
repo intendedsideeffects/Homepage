@@ -5,7 +5,8 @@ const SETTINGS = {
   speed: 0.09,
   roam: 85,
   hoverRadius: 14,
-  hoverSize: 20.5,
+  hoverSize: 30.5,
+  visitedSize: 2.6, // Pink dots remain visible after hover.
 };
 
 // 1. SETUP
@@ -39,7 +40,7 @@ let particles;
 resize();
 particles = d3.range(SETTINGS.count).map(() => {
   // Denser pockets along the diagonal, with quieter spaces between them.
-  const clusters = [0.19, 0.48, 0.78];
+  const clusters = [0.19, 0.48, 0.78, 0.84];
   const t =
     Math.random() < 0.72
       ? Math.max(
@@ -64,13 +65,14 @@ particles = d3.range(SETTINGS.count).map(() => {
     x,
     y,
     homeX: x,
-    visited: false,
     homeY: y,
     angle: Math.random() * Math.PI * 2,
     speed: SETTINGS.speed * (0.4 + Math.random() * 1.2),
     radius,
     displayRadius: radius,
-    opacity: 0.22 + Math.random() * 0.68,
+    visited: false,
+    opacity:
+      (t > 0.68 ? 0.36 : 0.22) + Math.random() * (t > 0.68 ? 0.58 : 0.68),
     color: blue
       ? Math.random() < 0.38
         ? "var(--particle-pale)"
@@ -80,6 +82,58 @@ particles = d3.range(SETTINGS.count).map(() => {
         : "var(--particle-gray)",
   };
 });
+
+// Small, irregular cluster in the lower-left corner.
+// Keep the typography clear; the cluster sits beneath the tagline.
+function addParticle(x, y, spread = 1) {
+  const blue = Math.random() < SETTINGS.blueShare;
+  const radius = (0.55 + Math.random() * 0.85) * spread;
+  particles.push({
+    x,
+    y,
+    homeX: x,
+    homeY: y,
+    angle: Math.random() * Math.PI * 2,
+    speed: SETTINGS.speed * (0.4 + Math.random() * 1.2),
+    radius,
+    displayRadius: radius,
+    visited: false,
+    opacity: 0.32 + Math.random() * 0.55,
+    color: blue
+      ? "var(--particle-blue)"
+      : Math.random() < 0.42
+        ? "var(--particle-soft)"
+        : "var(--particle-gray)",
+  });
+}
+
+// Two overlapping pockets create a small cloud, not a rectangle.
+for (let i = 0; i < 145; i++) {
+  const pocket = Math.random() < 0.65;
+  const x =
+    width * (pocket ? 0.11 : 0.23) + normal() * width * (pocket ? 0.065 : 0.05);
+  const y = height * (pocket ? 0.92 : 0.89) + normal() * height * 0.038;
+  addParticle(x, y);
+}
+
+// A BROKEN, airy connection toward the main cloud.
+// Three short groups with large gaps: no visible line or outline.
+for (let i = 0; i < 105; i++) {
+  const segment = Math.random();
+  const t =
+    segment < 0.36
+      ? Math.random() * 0.22
+      : segment < 0.68
+        ? 0.34 + Math.random() * 0.16
+        : 0.67 + Math.random() * 0.2;
+  // Curved path stays below the headline and joins the lower-left edge
+  // of the large cloud. Noise makes it naturally irregular.
+  const x = width * (0.27 + 0.37 * t) + normal() * width * 0.013;
+  const y =
+    height * (0.9 - 0.46 * t + 0.035 * Math.sin(t * Math.PI * 2)) +
+    normal() * height * 0.025;
+  addParticle(x, y, 0.85);
+}
 
 const circles = svg
   .selectAll("circle")
@@ -93,57 +147,51 @@ const circles = svg
 
 // 2. ANIMATION
 let lastTime = 0;
-
 function animate(time) {
   const dt = Math.min((time - lastTime || 16.67) / 16.67, 2);
   lastTime = time;
-
   for (const d of particles) {
     d.x += Math.cos(d.angle) * d.speed * dt;
     d.y += Math.sin(d.angle) * d.speed * dt;
-
-    // Keep each particle near its original position.
+    // Keep each grain near its original position to preserve the cloud shape.
     if (Math.abs(d.x - d.homeX) > SETTINGS.roam) {
       d.x = d.homeX + Math.sign(d.x - d.homeX) * SETTINGS.roam;
       d.angle = Math.PI - d.angle;
     }
-
     if (Math.abs(d.y - d.homeY) > SETTINGS.roam) {
       d.y = d.homeY + Math.sign(d.y - d.homeY) * SETTINGS.roam;
       d.angle = -d.angle;
     }
   }
 
-  // Find the closest particle to the cursor.
-  let closest = null;
-  let minDistance = SETTINGS.hoverRadius;
-
-  if (pointer) {
+  let closest = null,
+    minDistance = SETTINGS.hoverRadius;
+  if (pointer)
     for (const d of particles) {
       const distance = Math.hypot(d.x - pointer.x, d.y - pointer.y);
-
       if (distance < minDistance) {
         minDistance = distance;
         closest = d;
       }
     }
-  }
 
-  // Remember every particle the cursor has touched.
   if (closest) closest.visited = true;
 
   for (const d of particles) {
-    const target = d === closest ? SETTINGS.hoverSize : d.radius;
+    const target =
+      d === closest
+        ? SETTINGS.hoverSize
+        : d.visited
+          ? Math.max(d.radius, SETTINGS.visitedSize)
+          : d.radius;
     d.displayRadius += (target - d.displayRadius) * 0.25;
   }
-
   circles
     .attr("cx", (d) => d.x)
     .attr("cy", (d) => d.y)
     .attr("r", (d) => d.displayRadius)
     .attr("fill", (d) => (d.visited ? "#ff80ff" : d.color))
     .attr("opacity", (d) => (d.visited ? 1 : d.opacity));
-
   requestAnimationFrame(animate);
 }
 
