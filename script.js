@@ -6,7 +6,7 @@ const SETTINGS = {
   roam: 85,
   hoverRadius: 14,
   hoverSize: 30.5,
-  visitedSize: 2.6, // Pink dots remain visible after hover.
+  visitedSize: 2.4, // Pink dots remain visible after hover.
 };
 
 // 1. SETUP
@@ -191,7 +191,7 @@ function animate(time) {
     .attr("cy", (d) => d.y)
     .attr("r", (d) => d.displayRadius)
     .attr("fill", (d) => (d.visited ? "#ff80ff" : d.color))
-    .attr("opacity", (d) => (d.visited ? 1 : d.opacity));
+    .attr("opacity", (d) => (d.visited ? 0.65 : d.opacity));
   requestAnimationFrame(animate);
 }
 
