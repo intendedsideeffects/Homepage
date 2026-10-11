@@ -204,14 +204,14 @@ function animate(time) {
         : d.visited
           ? Math.max(d.radius, SETTINGS.visitedSize)
           : d.radius;
-    d.displayRadius += (target - d.displayRadius) * 0.25;
+    d.displayRadius += (target - d.displayRadius) * 0.35;
   }
   circles
     .attr("cx", (d) => d.x)
     .attr("cy", (d) => d.y)
     .attr("r", (d) => d.displayRadius)
     .attr("fill", (d) => (d.visited ? "#ff80ff" : d.color))
-    .attr("opacity", (d) => (d.visited ? 1 : d.opacity));
+    .attr("opacity", (d) => (d.visited ? 0.75 : d.opacity));
   requestAnimationFrame(animate);
 }
 
