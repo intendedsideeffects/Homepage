@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Intended Side Effects — data science, design and visual storytelling." />
+  <title>Intended Side Effects — Data & Design</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js" defer></script>
+  <script src="script.js" defer></script>
+</head>
+<body data-theme="light">
+  <div class="site-shell">
+    <header class="topbar">
+      <a class="wordmark" href="#home" aria-label="Intended Side Effects home"><span class="mark"></span></a>
+      <nav aria-label="Main navigation">
+        <a class="active" href="#home">HOME</a>
+        <a href="#about">ABOUT</a>
+        <a href="#projects">PROJECTS</a>
+        <a href="mailto:hello@example.com" title="Replace with your email address">CONTACT</a>
+      </nav>
+      <button class="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false"><span class="mode-label">LIGHT</span><span class="switch"><span class="knob"></span></span><span class="mode-label">DARK</span></button>
+    </header>
+
+    <main>
+      <section class="hero" id="home" aria-labelledby="hero-title">
+        <svg class="network" aria-hidden="true"></svg>
+        <div class="side-scale scale-left" aria-hidden="true"><span>01</span><span>02</span><span>03</span></div>
+        <div class="side-scale scale-right" aria-hidden="true"><span>04</span><span>05</span><span>06</span></div>
+        <div class="hero-copy">
+          <h1 id="hero-title">INTENDED<br />SIDE EFFECTS</h1>
+          <div class="short-rule"></div>
+          <p class="hero-tagline">Data always tells a story —<br />but not always the full one.</p>
+          <p class="hero-description">I'M A DATA SCIENTIST, DESIGNER AND VISUAL STORYTELLER.<br />I CREATE HUMAN-CENTERED DATA EXPERIENCES AND<br />APPROACHABLE EXPLANATIONS OF STATISTICS, ALGORITHMS, AND AI.</p>
+        </div>
+        <a class="scroll-cue" href="#about" aria-label="Scroll to about"><span class="arrow">↓</span><span>SCROLL</span></a>
+      </section>
+      <section class="below" id="about"><div class="section-number">01 / ABOUT</div><h2>Making data<br /><em>feel different.</em></h2><p>Exploring the space between analysis, design, and visual storytelling.</p></section>
+      <section class="below projects" id="projects"><div class="section-number">02 / PROJECTS</div><h2>Selected work</h2><p>Projects coming soon.</p></section>
+    </main>
+  </div>
+</body>
+</html>
