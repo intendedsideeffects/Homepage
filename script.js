@@ -64,6 +64,7 @@ particles = d3.range(SETTINGS.count).map(() => {
     x,
     y,
     homeX: x,
+    visited: false,
     homeY: y,
     angle: Math.random() * Math.PI * 2,
     speed: SETTINGS.speed * (0.4 + Math.random() * 1.2),
@@ -92,44 +93,57 @@ const circles = svg
 
 // 2. ANIMATION
 let lastTime = 0;
+
 function animate(time) {
   const dt = Math.min((time - lastTime || 16.67) / 16.67, 2);
   lastTime = time;
+
   for (const d of particles) {
     d.x += Math.cos(d.angle) * d.speed * dt;
     d.y += Math.sin(d.angle) * d.speed * dt;
-    // Keep each grain near its original position to preserve the cloud shape.
+
+    // Keep each particle near its original position.
     if (Math.abs(d.x - d.homeX) > SETTINGS.roam) {
       d.x = d.homeX + Math.sign(d.x - d.homeX) * SETTINGS.roam;
       d.angle = Math.PI - d.angle;
     }
+
     if (Math.abs(d.y - d.homeY) > SETTINGS.roam) {
       d.y = d.homeY + Math.sign(d.y - d.homeY) * SETTINGS.roam;
       d.angle = -d.angle;
     }
   }
 
-  let closest = null,
-    minDistance = SETTINGS.hoverRadius;
-  if (pointer)
+  // Find the closest particle to the cursor.
+  let closest = null;
+  let minDistance = SETTINGS.hoverRadius;
+
+  if (pointer) {
     for (const d of particles) {
       const distance = Math.hypot(d.x - pointer.x, d.y - pointer.y);
+
       if (distance < minDistance) {
         minDistance = distance;
         closest = d;
       }
     }
+  }
+
+  // Remember every particle the cursor has touched.
+  if (closest) closest.visited = true;
 
   for (const d of particles) {
     const target = d === closest ? SETTINGS.hoverSize : d.radius;
     d.displayRadius += (target - d.displayRadius) * 0.25;
   }
+
   circles
     .attr("cx", (d) => d.x)
     .attr("cy", (d) => d.y)
     .attr("r", (d) => d.displayRadius)
-    .attr("fill", (d) => (d === closest ? "#ff80ff" : d.color))
-    .attr("opacity", (d) => (d === closest ? 1 : d.opacity));
+    .attr("fill", (d) => (d.visited ? "#ff80ff" : d.color))
+    .attr("opacity", (d) => (d.visited ? 1 : d.opacity));
+
   requestAnimationFrame(animate);
 }
 
