@@ -1,4 +1,4 @@
-# Intended Side Effects — V11
+# Intended Side Effects — Homepage Header
 
 Minimal D3.js + SVG portfolio. Open `index.html` with Live Server, or run `py -m http.server 3000` from this folder and visit http://localhost:3000.
 
