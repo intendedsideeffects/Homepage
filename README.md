@@ -9,7 +9,7 @@
 
 *Intended Side Effects* is a personal portfolio exploring creative approaches to data visualization and storytelling, with a focus on human and more-than-human experiences.
 
-The website invites visitors to interact, explore, and leave their own traces.
+The portfolio website invites visitors to interact, explore, and leave their own traces.
 
 Its interactive particle visualization, built with D3.js, responds to movement and interaction, leaving colorful traces that gradually transform the visual landscape.
 
