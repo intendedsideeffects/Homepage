@@ -3,7 +3,7 @@
 
 **A personal portfolio at the intersection of data, design, and visual storytelling.**
 
-🌐 **[Explore the website](https://intendedsideeffects.github.io/Homepage/)**
+🌐 **[Explore the website...](https://intendedsideeffects.github.io/Homepage/)**
 
 ## About
 
